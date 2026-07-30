@@ -122,6 +122,215 @@ app.delete("/products/slug/:slug",async (req,res) => {
     
 })
 
+//Search products by brand
+app.get("/products/search/brand",async (req,res) => {
+    const productValue = req.query.brand;
+
+    console.log(productValue);
+
+    const data = await Product.find({brand: productValue});
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Search products by category
+app.get("/products/search/category",async (req,res) => {
+    const productValue = req.query.category;
+
+    console.log(productValue);
+
+    const data = await Product.find({category: productValue});
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Search available products
+app.get("/products/search/available",async (req,res) => {
+    const data = await Product.find({isAvailable: true});
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+//Search out-of-stock products
+app.get("/products/search/out-of-stock",async (req,res) => {
+    const data = await Product.find({ stock: 0 });
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+//Search products by brand and category
+app.get("/products/search/brand-category",async (req,res) => {
+    const {brand,category} = req.query;
+    const data = await Product.find({brand: brand, category: category});
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+//Search products by brand OR category
+app.get("/products/search/brand-or-category",async (req,res) => {
+    const {brand,category} = req.query;
+    const data = await Product.find(
+        {
+            $or: [
+                {brand: brand},
+                {category: category}
+            ]
+        }
+    );
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Products with price greater than amount
+app.get("/products/search/price-greater-than",async (req,res) => {
+    const {amount} = req.query;
+    const data = await Product.find(
+        {
+            price: {$gt: amount}
+        }
+    );
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Products with price less than amount
+app.get("/products/search/price-less-than",async (req,res) => {
+    const {amount} = req.query;
+    const data = await Product.find(
+        {
+            price: {$lt: amount}
+        }
+    );
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Products with price between min and max
+app.get("/products/search/price-between",async (req,res) => {
+    const {min,max} = req.query;
+    const data = await Product.find(
+        {
+            price: {$gte: min,$lte: max}
+        }
+    );
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+// Products with rating greater than given value
+app.get("/products/search/rating",async (req,res) => {
+    const {rating} = req.query;
+    const data = await Product.find(
+        {
+            rating: {$gte: rating}
+        }
+    );
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+
+    
+})
+
+
+
 
 
 app.listen("5050",()=>{
