@@ -18,6 +18,7 @@ app.get("/products",async (req,res) => {
     res.json(allProduct);
 })
 
+// Basic CRUD ====>
 //Create product
 app.post("/product",async (req,res) => {
     const userProduct = req.body;
@@ -122,6 +123,8 @@ app.delete("/products/slug/:slug",async (req,res) => {
     
 })
 
+
+// Search and Filter APIs. ======>
 //Search products by brand
 app.get("/products/search/brand",async (req,res) => {
     const productValue = req.query.brand;
@@ -388,6 +391,98 @@ app.get("/products/search/name",async (req,res) => {
         massage: "Product Found Successfully",
         product: data
     })
+})
+
+
+// Sorting and Pagination APIs. =======>
+// Sort products by price low to high
+app.get("/products/sort/price-asc",async (req,res) => {
+    const data = await Product.find().sort({ price: 1 });
+    console.log(data);
+    
+    if(data[0] == null){
+        res.json({
+            massage: "Invalid Oparation!"
+        })
+    }
+    else{
+        res.json({
+            massage: "Product Sort Successfully",
+            product: data
+        })
+    }
+})
+
+// Sort products by price high to low
+app.get("/products/sort/price-desc",async (req,res) => {
+    const data = await Product.find().sort({ price: -1 });
+    // console.log(data);
+    
+    if(data[0] == null){
+        res.json({
+            massage: "Invalid Oparation!"
+        })
+    }
+    else{
+        res.json({
+            massage: "Product Sort Successfully",
+            product: data
+        })
+    }
+})
+
+// Sort products by rating high to low
+app.get("/products/sort/rating-desc",async (req,res) => {
+    const data = await Product.find().sort({ rating: -1 });
+    // console.log(data);
+    
+    if(data[0] == null){
+        res.json({
+            massage: "Invalid Oparation!"
+        })
+    }
+    else{
+        res.json({
+            massage: "Product Sort Successfully",
+            product: data
+        })
+    }
+})
+
+// Get top 5 expensive products
+app.get("/products/top/expensive",async (req,res) => {
+    const data = await Product.find().sort({ price: -1 }).limit(5);
+    // console.log(data);
+    
+    if(data[0] == null){
+        res.json({
+            massage: "Invalid Oparation!"
+        })
+    }
+    else{
+        res.json({
+            massage: "Top 5 Expensive Products",
+            product: data
+        })
+    }
+})
+
+// Pagination API***
+app.get("/products/pagination",async (req,res) => {
+    const {page,limit} = req.query;
+    const skipNo = (page - 1)*10;
+    const data = (await Product.find().skip(skipNo).limit(limit));
+    if(data[0] == null){
+        res.json({
+            massage: "Product Is Not Found!"
+        })
+    }
+    else{
+        res.json({
+            massage: `Product Found Successfully For Page ${page}`,
+            product: data
+        })
+    }
 })
 
 
