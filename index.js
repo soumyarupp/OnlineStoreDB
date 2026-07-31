@@ -579,7 +579,62 @@ app.patch("/products/:slug/tags",async (req,res) => {
     })
 })
 
+// Remove tag from product
+app.patch("/products/:slug/tags/remove",async (req,res) => {
+    const slug = req.params.slug;
+    const newtag = req.body.tag;
+    const data = await Product.findOneAndUpdate(
+        {
+            slug: slug
+        },
+        {
+            $pull: {tags: newtag}
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
 
+    if (data == null) {
+        res.json({
+            massage: "Product Update Not Posible!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product tag Update Successfully",
+        product: data
+    })
+})
+
+// Add review to product
+app.patch("/products/:slug/reviews",async (req,res) => {
+    const slug = req.params.slug;
+    const {user,comment,rating} = req.body;
+    const data = await Product.findOneAndUpdate(
+        {slug: slug},
+        {$push: {
+            reviews: {
+                user,comment,rating
+            }
+        }},
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+    if (data == null) {
+        res.json({
+            massage: "Review Not Created!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Review Created Successfully",
+        product: data
+    })
+})
 
 
 
