@@ -329,6 +329,69 @@ app.get("/products/search/rating",async (req,res) => {
     
 })
 
+// Products from multiple categories
+app.get("/products/search/categories",async (req,res) => {
+    const categories = req.query.categories;
+    
+    console.log(categories.split(","));
+    
+    const data = await Product.find({category: {$in: categories.split(",")}});
+
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+})
+
+// Products not from given category
+app.get("/products/search/not-category",async (req,res) => {
+    const category = req.query.category;
+    const data = await Product.find({category: {$ne: category}});
+
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+})
+
+// Search product by name
+app.get("/products/search/name",async (req,res) => {
+    const Myname = req.query.name;
+    console.log(Myname);
+    
+    const data = await Product.find({
+
+        name: { $regex: Myname, $options: "i" }
+
+    });
+    console.log(data);
+    
+    if(data[0] == null){
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Found Successfully",
+        product: data
+    })
+})
+
+
+
 
 
 
