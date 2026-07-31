@@ -8,19 +8,19 @@ const connectDB = await mongoose.connect("mongodb+srv://soumyarupsamanta50_db_us
 
 
 //Wellcome page
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.send("Wellcome To My Site");
 })
 
 //all product info
-app.get("/products",async (req,res) => {
+app.get("/products", async (req, res) => {
     const allProduct = await Product.find();
     res.json(allProduct);
 })
 
 // Basic CRUD ====>
 //Create product
-app.post("/product",async (req,res) => {
+app.post("/product", async (req, res) => {
     const userProduct = req.body;
     console.log(userProduct);
     const newProduct = await Product.create(req.body)
@@ -28,15 +28,15 @@ app.post("/product",async (req,res) => {
         massage: "Product Created Successfully",
         product: newProduct
     })
-    
+
 })
 
 // Create multiple products
-app.post("/product/bulk",async (req,res) => {
+app.post("/product/bulk", async (req, res) => {
     const userProduct = req.body;
     console.log(userProduct);
     const newProduct = await Product.create(req.body)
-    if(data == null){
+    if (data == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -46,14 +46,14 @@ app.post("/product/bulk",async (req,res) => {
         massage: "Product Created Successfully",
         product: newProduct
     })
-    
+
 })
 
 // Get product by MongoDB id
-app.get("/products/id/:id",async (req,res) => {
+app.get("/products/id/:id", async (req, res) => {
     const id = req.params.id;
     const data = await Product.findById(id);
-    if(data == null){
+    if (data == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -64,14 +64,14 @@ app.get("/products/id/:id",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 //Get product by slug
-app.get("/products/slug/:slug",async (req,res) => {
+app.get("/products/slug/:slug", async (req, res) => {
     const slug = req.params.slug;
-    const data = await Product.findOne({slug: slug});
-    if(data == null){
+    const data = await Product.findOne({ slug: slug });
+    if (data == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -82,15 +82,15 @@ app.get("/products/slug/:slug",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 //Update product by slug
-app.patch("/products/slug/:slug",async (req,res) => {
+app.patch("/products/slug/:slug", async (req, res) => {
     const slug = req.params.slug;
     const UpdateData = req.body;
-    const data = await Product.findOneAndUpdate({slug: slug},UpdateData,{new: true});
-    if(data == null){
+    const data = await Product.findOneAndUpdate({ slug: slug }, UpdateData, { new: true });
+    if (data == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -101,15 +101,15 @@ app.patch("/products/slug/:slug",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Delete product by slug
-app.delete("/products/slug/:slug",async (req,res) => {
+app.delete("/products/slug/:slug", async (req, res) => {
     const slug = req.params.slug;
     const UpdateData = req.body;
-    const data = await Product.findOneAndDelete({slug: slug});
-    if(data == null){
+    const data = await Product.findOneAndDelete({ slug: slug });
+    if (data == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -120,19 +120,19 @@ app.delete("/products/slug/:slug",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 
 // Search and Filter APIs. ======>
 //Search products by brand
-app.get("/products/search/brand",async (req,res) => {
+app.get("/products/search/brand", async (req, res) => {
     const productValue = req.query.brand;
 
     console.log(productValue);
 
-    const data = await Product.find({brand: productValue});
-    if(data[0] == null){
+    const data = await Product.find({ brand: productValue });
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -143,17 +143,17 @@ app.get("/products/search/brand",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Search products by category
-app.get("/products/search/category",async (req,res) => {
+app.get("/products/search/category", async (req, res) => {
     const productValue = req.query.category;
 
     console.log(productValue);
 
-    const data = await Product.find({category: productValue});
-    if(data[0] == null){
+    const data = await Product.find({ category: productValue });
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -164,13 +164,13 @@ app.get("/products/search/category",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Search available products
-app.get("/products/search/available",async (req,res) => {
-    const data = await Product.find({isAvailable: true});
-    if(data[0] == null){
+app.get("/products/search/available", async (req, res) => {
+    const data = await Product.find({ isAvailable: true });
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -181,13 +181,13 @@ app.get("/products/search/available",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 //Search out-of-stock products
-app.get("/products/search/out-of-stock",async (req,res) => {
+app.get("/products/search/out-of-stock", async (req, res) => {
     const data = await Product.find({ stock: 0 });
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -198,14 +198,14 @@ app.get("/products/search/out-of-stock",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 //Search products by brand and category
-app.get("/products/search/brand-category",async (req,res) => {
-    const {brand,category} = req.query;
-    const data = await Product.find({brand: brand, category: category});
-    if(data[0] == null){
+app.get("/products/search/brand-category", async (req, res) => {
+    const { brand, category } = req.query;
+    const data = await Product.find({ brand: brand, category: category });
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -216,21 +216,21 @@ app.get("/products/search/brand-category",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 //Search products by brand OR category
-app.get("/products/search/brand-or-category",async (req,res) => {
-    const {brand,category} = req.query;
+app.get("/products/search/brand-or-category", async (req, res) => {
+    const { brand, category } = req.query;
     const data = await Product.find(
         {
             $or: [
-                {brand: brand},
-                {category: category}
+                { brand: brand },
+                { category: category }
             ]
         }
     );
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -241,18 +241,18 @@ app.get("/products/search/brand-or-category",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Products with price greater than amount
-app.get("/products/search/price-greater-than",async (req,res) => {
-    const {amount} = req.query;
+app.get("/products/search/price-greater-than", async (req, res) => {
+    const { amount } = req.query;
     const data = await Product.find(
         {
-            price: {$gt: amount}
+            price: { $gt: amount }
         }
     );
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -263,18 +263,18 @@ app.get("/products/search/price-greater-than",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Products with price less than amount
-app.get("/products/search/price-less-than",async (req,res) => {
-    const {amount} = req.query;
+app.get("/products/search/price-less-than", async (req, res) => {
+    const { amount } = req.query;
     const data = await Product.find(
         {
-            price: {$lt: amount}
+            price: { $lt: amount }
         }
     );
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -285,18 +285,18 @@ app.get("/products/search/price-less-than",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Products with price between min and max
-app.get("/products/search/price-between",async (req,res) => {
-    const {min,max} = req.query;
+app.get("/products/search/price-between", async (req, res) => {
+    const { min, max } = req.query;
     const data = await Product.find(
         {
-            price: {$gte: min,$lte: max}
+            price: { $gte: min, $lte: max }
         }
     );
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -307,18 +307,18 @@ app.get("/products/search/price-between",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Products with rating greater than given value
-app.get("/products/search/rating",async (req,res) => {
-    const {rating} = req.query;
+app.get("/products/search/rating", async (req, res) => {
+    const { rating } = req.query;
     const data = await Product.find(
         {
-            rating: {$gte: rating}
+            rating: { $gte: rating }
         }
     );
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -329,18 +329,18 @@ app.get("/products/search/rating",async (req,res) => {
         product: data
     })
 
-    
+
 })
 
 // Products from multiple categories
-app.get("/products/search/categories",async (req,res) => {
+app.get("/products/search/categories", async (req, res) => {
     const categories = req.query.categories;
-    
-    console.log(categories.split(","));
-    
-    const data = await Product.find({category: {$in: categories.split(",")}});
 
-    if(data[0] == null){
+    console.log(categories.split(","));
+
+    const data = await Product.find({ category: { $in: categories.split(",") } });
+
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -353,11 +353,11 @@ app.get("/products/search/categories",async (req,res) => {
 })
 
 // Products not from given category
-app.get("/products/search/not-category",async (req,res) => {
+app.get("/products/search/not-category", async (req, res) => {
     const category = req.query.category;
-    const data = await Product.find({category: {$ne: category}});
+    const data = await Product.find({ category: { $ne: category } });
 
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -370,18 +370,18 @@ app.get("/products/search/not-category",async (req,res) => {
 })
 
 // Search product by name
-app.get("/products/search/name",async (req,res) => {
+app.get("/products/search/name", async (req, res) => {
     const Myname = req.query.name;
     console.log(Myname);
-    
+
     const data = await Product.find({
 
         name: { $regex: Myname, $options: "i" }
 
     });
     console.log(data);
-    
-    if(data[0] == null){
+
+    if (data[0] == null) {
         res.json({
             massage: "Product Not Found!",
         });
@@ -396,16 +396,16 @@ app.get("/products/search/name",async (req,res) => {
 
 // Sorting and Pagination APIs. =======>
 // Sort products by price low to high
-app.get("/products/sort/price-asc",async (req,res) => {
+app.get("/products/sort/price-asc", async (req, res) => {
     const data = await Product.find().sort({ price: 1 });
     console.log(data);
-    
-    if(data[0] == null){
+
+    if (data[0] == null) {
         res.json({
             massage: "Invalid Oparation!"
         })
     }
-    else{
+    else {
         res.json({
             massage: "Product Sort Successfully",
             product: data
@@ -414,16 +414,16 @@ app.get("/products/sort/price-asc",async (req,res) => {
 })
 
 // Sort products by price high to low
-app.get("/products/sort/price-desc",async (req,res) => {
+app.get("/products/sort/price-desc", async (req, res) => {
     const data = await Product.find().sort({ price: -1 });
     // console.log(data);
-    
-    if(data[0] == null){
+
+    if (data[0] == null) {
         res.json({
             massage: "Invalid Oparation!"
         })
     }
-    else{
+    else {
         res.json({
             massage: "Product Sort Successfully",
             product: data
@@ -432,16 +432,16 @@ app.get("/products/sort/price-desc",async (req,res) => {
 })
 
 // Sort products by rating high to low
-app.get("/products/sort/rating-desc",async (req,res) => {
+app.get("/products/sort/rating-desc", async (req, res) => {
     const data = await Product.find().sort({ rating: -1 });
     // console.log(data);
-    
-    if(data[0] == null){
+
+    if (data[0] == null) {
         res.json({
             massage: "Invalid Oparation!"
         })
     }
-    else{
+    else {
         res.json({
             massage: "Product Sort Successfully",
             product: data
@@ -450,16 +450,16 @@ app.get("/products/sort/rating-desc",async (req,res) => {
 })
 
 // Get top 5 expensive products
-app.get("/products/top/expensive",async (req,res) => {
+app.get("/products/top/expensive", async (req, res) => {
     const data = await Product.find().sort({ price: -1 }).limit(5);
     // console.log(data);
-    
-    if(data[0] == null){
+
+    if (data[0] == null) {
         res.json({
             massage: "Invalid Oparation!"
         })
     }
-    else{
+    else {
         res.json({
             massage: "Top 5 Expensive Products",
             product: data
@@ -468,16 +468,16 @@ app.get("/products/top/expensive",async (req,res) => {
 })
 
 // Pagination API***
-app.get("/products/pagination",async (req,res) => {
-    const {page,limit} = req.query;
-    const skipNo = (page - 1)*10;
+app.get("/products/pagination", async (req, res) => {
+    const { page, limit } = req.query;
+    const skipNo = (page - 1) * 10;
     const data = (await Product.find().skip(skipNo).limit(limit));
-    if(data[0] == null){
+    if (data[0] == null) {
         res.json({
             massage: "Product Is Not Found!"
         })
     }
-    else{
+    else {
         res.json({
             massage: `Product Found Successfully For Page ${page}`,
             product: data
@@ -486,11 +486,104 @@ app.get("/products/pagination",async (req,res) => {
 })
 
 
+// Stock, Tags, Reviews.   =======>
+// Increase product stock
+app.patch("/products/:slug/stock/increase", async (req, res) => {
+    const slug = req.params.slug;
+    const num = req.body.quantity;
+    console.log(num);
+    console.log(slug);
+
+    const data = await Product.findOneAndUpdate(
+        {
+            slug: slug
+        },
+        {
+            $inc: { stock: num }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+    if (data == null) {
+        res.json({
+            massage: "Product Not Found!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Update Successfully",
+        product: data
+    })
+})
+
+// Decrease product stock
+app.patch("/products/:slug/stock/decrease", async (req, res) => {
+    const slug = req.params.slug;
+    const num = req.body.quantity;
+    console.log(num);
+    console.log(slug);
+
+    const data = await Product.findOneAndUpdate(
+        {
+            slug: slug,
+            stock: {$gte: num,$lte: 0}
+        },
+        {
+            $inc: { stock: -num }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+    if (data == null) {
+        res.json({
+            massage: "Product Update Not Posible!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product Update Successfully",
+        product: data
+    })
+})
+
+//Add tag to product
+app.patch("/products/:slug/tags",async (req,res) => {
+    const slug = req.params.slug;
+    const newtag = req.body.tag;
+    const data = await Product.findOneAndUpdate(
+        {
+            slug: slug
+        },
+        {
+            $push: {tags: newtag}
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    )
+
+    if (data == null) {
+        res.json({
+            massage: "Product Update Not Posible!",
+        });
+        return;
+    }
+    res.json({
+        massage: "Product tag Update Successfully",
+        product: data
+    })
+})
 
 
 
 
 
-app.listen("5050",()=>{
+
+app.listen("5050", () => {
     console.log("Server is started at port 5050");
 })
